@@ -33,10 +33,10 @@
   },
   "browserslist": {
     "production": [
-      "baseline widely available"
+      "baseline newly available"
     ],
     "development": [
-      "baseline widely available"
+      "baseline newly available"
     ]
   },
   "devDependencies": {
