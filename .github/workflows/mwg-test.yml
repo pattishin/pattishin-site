@@ -1,0 +1,65 @@
+name: Baseline change
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - "package.json"
+
+permissions:
+  pull-requests: write
+  contents: write
+  id-token: write
+
+jobs:
+  # ─────────────────────────────────────────────────────────
+  # Modern Web Guidance Skill
+  # ─────────────────────────────────────────────────────────
+  detect_change:
+    name: Detect change in baseline
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.detect.outputs.changed }}
+      old_query: ${{ steps.diff.outputs.old_query}}
+      new_query: ${{ steps.diff.outputs.new_query}}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 2
+
+      - name: Detect change
+        id: detect
+        run: |
+          echo "" > changed.txt
+          if [[ $(git diff --name-only HEAD~1 HEAD) =~ "package.json" ]]; then
+            echo "package.json has changed" >> changed.txt
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "package.json has not changed" >> changed.txt
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+
+  mwg-test:
+    needs: detect-change
+    if: needs.detect-change.outputs.changed == 'true'
+    name: Run Modern Web Guidance Skill
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - uses: anthropic/claude-code-action@v1
+        with:
+          anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            /modern-web-guidance
+
+            Check the browserlist field in package.json file. If it has changed, evaluate whether any 
+            polyfills and/or shims are still required for the use cases in this repository. 
+            List each polyfill/shim and your reasoning and which use-case guidance was the reason.
+            Implemenet the recommended changes and open a PR explaining the reasoning, tied to the specific
+            use case guidances and browser targets that changed.
+          claude_args: "--max-turns 15"
