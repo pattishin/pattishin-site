@@ -41,7 +41,7 @@ jobs:
 
   mwg-test:
     needs: detect_change
-    if: needs.detect-change.outputs.changed == 'true'
+    if: needs.detect_change.outputs.changed == 'true'
     name: Run Modern Web Guidance Skill
     runs-on: ubuntu-latest
 
