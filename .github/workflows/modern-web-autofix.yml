@@ -36,7 +36,24 @@ jobs:
       - name: Install Modern Web Guidance Plugin
         # Installs the official Chrome team skills package directly into Antigravity
         run: agy plugin install https://github.com/GoogleChrome/modern-web-guidance
-
+        
+      - name: Configure Antigravity CLI Permissions
+        run: |
+          mkdir -p ~/.gemini/antigravity-cli
+          cat <<EOF > ~/.gemini/antigravity-cli/settings.json
+          {
+            "toolPermission": "always-proceed",
+            "permissions": {
+              "allow": [
+                "read_file(*)",
+                "write_file(*)",
+                "command(git*)",
+                "command(gh*)"
+              ]
+            }
+          }
+          EOF
+          
       - name: Run Antigravity Workflow
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
