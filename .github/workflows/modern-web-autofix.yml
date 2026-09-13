@@ -22,6 +22,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0 # Full history is needed so the agent can branch off correctly
+          
       # Install agy cli
       - name: Install Antigravity CLI
         run: |
@@ -29,37 +30,22 @@ jobs:
           # Ensure the installed binary is in the runner's PATH
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
-      - name: Configure Antigravity CLI for Headless Auth
+      - name: Configure Antigravity CLI
         run: |
-          mkdir -p ~/.gemini/antigravity-cli
-          # Tell agy to use the API key instead of browser OAuth
-          cat <<EOF > ~/.gemini/antigravity-cli/settings.json
-          {
-            "modelProvider": "gemini"
-          }
-          EOF
-
+            mkdir -p ~/.gemini/antigravity-cli
+            cat <<EOF > ~/.gemini/antigravity-cli/settings.json
+            {
+              "modelProvider": "gemini",
+              "toolPermission": "always-proceed",
+              "permissions": {
+                "allow": ["*"]
+              }
+            }
+            EOF
 
       - name: Install Modern Web Guidance Plugin
         # Installs the official Chrome team skills package directly into Antigravity
         run: agy plugin install https://github.com/GoogleChrome/modern-web-guidance
-        
-      - name: Configure Antigravity CLI Permissions
-        run: |
-          mkdir -p ~/.gemini/antigravity-cli
-          cat <<EOF > ~/.gemini/antigravity-cli/settings.json
-          {
-            "toolPermission": "always-proceed",
-            "permissions": {
-              "allow": [
-                "read_file(*)",
-                "write_file(*)",
-                "command(git*)",
-                "command(gh*)"
-              ]
-            }
-          }
-          EOF
           
       - name: Run Antigravity Workflow
         env:
