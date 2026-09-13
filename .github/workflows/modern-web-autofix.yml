@@ -45,7 +45,7 @@ jobs:
 
       - name: Install Modern Web Guidance Plugin
         # Installs the official Chrome team skills package directly into Antigravity
-        run: agy plugin install https://github.com/GoogleChrome/modern-web-guidance
+        run: agy plugin install https://github.com/GoogleChrome/modern-web-guidance --dangerously-skip-permissions
           
       - name: Run Antigravity Workflow
         env:
@@ -59,7 +59,7 @@ jobs:
           # Pipe the issue context and instruct the agent to use Modern Web Guidance
           echo -e "Issue #${{ github.event.issue.number }}: ${{ github.event.issue.title }}\n\n${{ github.event.issue.body }}" | agy -p "
           You are an expert frontend developer maintaining the pattishin.io website.
-          1. When you use "agy" append "--dangerously-skip-permissions" at the end.
+          1. When you use "agy" append "--dangerously-skip-permissions" at the end as needed.
           2. Review the piped issue.
           2. Use your 'modern-web-guidance' skills to formulate a fix. You MUST prioritize modern, native web platform capabilities, Core Web Vitals, and accessibility over bloated legacy JavaScript patterns.
           3. Search the codebase, implement the necessary file edits, and run any build checks.
