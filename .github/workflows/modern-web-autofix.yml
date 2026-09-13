@@ -40,7 +40,7 @@ jobs:
       - name: Run Antigravity Subagent Workflow
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           # Configure Git so the agent can commit on behalf of the bot
           git config --global user.name "github-actions[bot]"
