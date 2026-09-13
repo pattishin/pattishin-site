@@ -17,21 +17,28 @@ jobs:
       issues: write
 
     steps:
+      # Checking out the repos
       - name: Checkout pattishin-site repository
         uses: actions/checkout@v6
         with:
           fetch-depth: 0 # Full history is needed so the agent can branch off correctly
-
+      # Install agy cli
       - name: Install Antigravity CLI
         run: |
           curl -fsSL https://antigravity.google/cli/install.sh | bash
           # Ensure the installed binary is in the runner's PATH
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
-      - name: Configure Headless Authentication
+      - name: Configure Antigravity CLI for Headless Auth
         run: |
-          mkdir -p ~/.gemini/antigravity-cli/
-          echo '{"modelProvider": "gemini"}' > ~/.gemini/antigravity-cli/settings.json
+          mkdir -p ~/.gemini/antigravity-cli
+          # Tell agy to use the API key instead of browser OAuth
+          cat <<EOF > ~/.gemini/antigravity-cli/settings.json
+          {
+            "modelProvider": "gemini"
+          }
+          EOF
+
 
       - name: Install Modern Web Guidance Plugin
         # Installs the official Chrome team skills package directly into Antigravity
@@ -66,7 +73,8 @@ jobs:
           # Pipe the issue context and instruct the agent to use Modern Web Guidance
           echo -e "Issue #${{ github.event.issue.number }}: ${{ github.event.issue.title }}\n\n${{ github.event.issue.body }}" | agy -p "
           You are an expert frontend developer maintaining the pattishin.io website.
-          1. Review the piped issue.
+          1. When you use "agy" append "--dangerously-skip-permissions" at the end.
+          2. Review the piped issue.
           2. Use your 'modern-web-guidance' skills to formulate a fix. You MUST prioritize modern, native web platform capabilities, Core Web Vitals, and accessibility over bloated legacy JavaScript patterns.
           3. Search the codebase, implement the necessary file edits, and run any build checks.
           4. Commit the modernized code to a new branch named 'fix/issue-${{ github.event.issue.number }}'.
