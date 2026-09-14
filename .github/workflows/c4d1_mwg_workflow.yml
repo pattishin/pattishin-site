@@ -6,8 +6,8 @@ on:
 
 jobs:
   audit-and-fix:
-    # Optional: Only run if the issue is labeled with 'audit' and 'modernize'
-   if: contains(github.event.issue.labels.*.name, 'modernize', 'audit')
+    # Optional: Only run if the issue is labeled with 'audit'
+   if: contains(github.event.issue.labels.*.name, 'audit')
    runs-on: ubuntu-latest
 
     # Required permissions for the agent to push code and create PRs
