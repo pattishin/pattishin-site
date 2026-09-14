@@ -1,27 +1,22 @@
 name: Agentic Performance Audit & Auto-Fix
 
 on:
- issues:
-   types: [opened, labeled]
+  workflow_dispatch: # Allows you to run this manually from the GitHub UI
 
 jobs:
   audit-and-fix:
-    # Optional: Only run if the issue is labeled with 'audit'
-   if: contains(github.event.issue.labels.*.name, 'audit')
-   runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-    # Required permissions for the agent to push code and create PRs
-   permissions:
-     contents: write
-     pull-requests: write
-     issues: write
+      - name: Setup Node (Adjust if using Python/Ruby/etc)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
-   steps:
-     # Checking out the repos
-     - name: Checkout pattishin-site repository
-       uses: actions/checkout@v6
-       with:
-         fetch-depth: 0 # Full history is needed so the agent can branch off correctly
+      - name: Install Project Dependencies
+        run: npm install
 
       - name: Install Google Chrome (Required for DevTools for Agents)
         run: |
@@ -33,11 +28,7 @@ jobs:
           curl -fsSL https://antigravity.google/cli/install.sh | bash
           # Add agy to the GitHub Actions path
           echo "$HOME/.local/bin" >> $GITHUB_PATH
-      
-      # Installs the official Chrome team skills package directly into Antigravity        
-      - name: Install Modern Web Guidance Plugin
-        run: agy plugin install https://github.com/GoogleChrome/modern-web-guidance
-      
+
       - name: Configure Antigravity CLI and Git
         run: |
           # 1. Give the agent a Git identity so it can commit code
@@ -65,14 +56,12 @@ jobs:
           agy -p "With Chrome DevTools for agents, run the site locally in the background. Throttle the network conditions to simulate real-world performance constraints and capture the performance trace for the first 30 seconds. 
           
           List the recommended fixes based on the trace at the end. 
-          # Pipe the issue context and instruct the agent to use Modern Web Guidance
-         You are an expert frontend developer maintaining the pattishin.io website.
-         Then, for EVERY recommended fix, do the following:
-          1. Review the piped issue.
-          2. Create and checkout a brand new git branch named 'perf-fix-<issue-name>'.
-          3. Invoke a subagent to apply the code fix. Instruct the subagent to use the 'modern web guidance' skill to ensure best practices.
-          4. Have the subagent commit the changes to that branch.
-          5. Push the branch to origin and use the 'gh' cli to create a pull request with the details of the trace improvement.
-          6. Checkout main again before moving to the next fix." \
+          
+          Then, for EVERY recommended fix, do the following:
+          1. Create and checkout a brand new git branch named 'perf-fix-<issue-name>'.
+          2. Invoke a subagent to apply the code fix. Instruct the subagent to use the 'modern web guidance' skill to ensure best practices.
+          3. Have the subagent commit the changes to that branch.
+          4. Push the branch to origin and use the 'gh' cli to create a pull request with the details of the trace improvement.
+          5. Checkout main again before moving to the next fix." \
           --skills "modern web guidance" \
           --dangerously-skip-permissions
