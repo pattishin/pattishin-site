@@ -18,15 +18,6 @@ jobs:
       - name: Install Project Dependencies
         run: npm install   
       
-      - name: Install Modern Web Guidance Plugin
-        # Installs the official Chrome team skills package directly into Antigravity
-        run: agy plugin install https://github.com/GoogleChrome/modern-web-guidance
-       
-      - name: Install Google Chrome (Required for DevTools for Agents)
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y google-chrome-stable
-
       - name: Install Latest Antigravity CLI
         run: |
           curl -fsSL https://antigravity.google/cli/install.sh | bash
@@ -50,6 +41,15 @@ jobs:
             }
           }
           EOF
+          
+      - name: Install Modern Web Guidance Plugin
+        # Installs the official Chrome team skills package directly into Antigravity
+        run: agy plugin install https://github.com/GoogleChrome/modern-web-guidance
+       
+      - name: Install Google Chrome (Required for DevTools for Agents)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
 
       - name: Run Performance Audit and Dispatch Subagents
         env:
