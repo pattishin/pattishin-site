@@ -6,8 +6,8 @@ on:
 
 jobs:
   audit-and-fix:
-    # Optional: Only run if the issue is labeled with 'modernize' or 'bug'
-   if: contains(github.event.issue.labels.*.name, 'modernize')
+    # Optional: Only run if the issue is labeled with 'audit' and 'modernize'
+   if: contains(github.event.issue.labels.*.name, 'modernize', 'audit')
    runs-on: ubuntu-latest
 
     # Required permissions for the agent to push code and create PRs
@@ -66,11 +66,8 @@ jobs:
           
           List the recommended fixes based on the trace at the end. 
           # Pipe the issue context and instruct the agent to use Modern Web Guidance
-          
-         echo -e "Issue #${{ github.event.issue.number }}: ${{ github.event.issue.title }}\n\n${{ github.event.issue.body }}" | agy -p "
          You are an expert frontend developer maintaining the pattishin.io website.
-
-          Then, for EVERY recommended fix, do the following:
+         Then, for EVERY recommended fix, do the following:
           1. Review the piped issue.
           2. Create and checkout a brand new git branch named 'perf-fix-<issue-name>'.
           3. Invoke a subagent to apply the code fix. Instruct the subagent to use the 'modern web guidance' skill to ensure best practices.
