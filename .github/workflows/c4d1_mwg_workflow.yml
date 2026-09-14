@@ -8,12 +8,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Node (Adjust if using Python/Ruby/etc)
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
 
       - name: Install Project Dependencies
         run: npm install
@@ -58,10 +58,9 @@ jobs:
           List the recommended fixes based on the trace at the end. 
           
           Then, for EVERY recommended fix, do the following:
-          1. Create and checkout a brand new git branch named 'perf-fix-<issue-name>'.
-          2. Invoke a subagent to apply the code fix. Instruct the subagent to use the 'modern web guidance' skill to ensure best practices.
-          3. Have the subagent commit the changes to that branch.
-          4. Push the branch to origin and use the 'gh' cli to create a pull request with the details of the trace improvement.
-          5. Checkout main again before moving to the next fix." \
-          --skills "modern web guidance" \
-          --dangerously-skip-permissions
+          1. When you use "agy" append "--dangerously-skip-permissions" at the end as needed.
+          2. Create and checkout a brand new git branch named 'perf-fix-<issue-name>'.
+          3. Invoke a subagent to apply the code fix. Instruct the subagent to use the 'modern web guidance' skill to ensure best practices.
+          4. Have the subagent commit the changes to that branch.
+          5. Push the branch to origin and use the 'gh' cli to create a pull request with the details of the trace improvement. Add tokens used by mcp and skill.
+          6. Checkout main again before moving to the next fix." 
