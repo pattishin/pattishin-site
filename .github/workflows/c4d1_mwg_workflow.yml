@@ -1,0 +1,71 @@
+name: Agentic Performance Audit & Auto-Fix
+
+on:
+  workflow_dispatch: # Allows you to run this manually from the GitHub UI
+
+jobs:
+  audit-and-fix:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      - name: Setup Node (Adjust if using Python/Ruby/etc)
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24.18.0'
+
+      - name: Install Project Dependencies
+        run: npm install
+
+      - name: Install Google Chrome (Required for DevTools for Agents)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+
+      - name: Install Latest Antigravity CLI
+        run: |
+          curl -fsSL https://antigravity.google/cli/install.sh | bash
+          # Add agy to the GitHub Actions path
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+      
+      # Installs the official Chrome team skills package directly into Antigravity        
+      - name: Install Modern Web Guidance Plugin
+        run: agy plugin install https://github.com/GoogleChrome/modern-web-guidance
+      
+      - name: Configure Antigravity CLI and Git
+        run: |
+          # 1. Give the agent a Git identity so it can commit code
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # 2. Force API key usage and bypass prompt limits
+          mkdir -p ~/.gemini/antigravity-cli
+          cat <<EOF > ~/.gemini/antigravity-cli/settings.json
+          {
+            "modelProvider": "gemini",
+            "toolPermission": "always-proceed",
+            "permissions": {
+              "allow": ["*"]
+            }
+          }
+          EOF
+
+      - name: Run Performance Audit and Dispatch Subagents
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Combine the user prompt with strict branching instructions
+          agy -p "With Chrome DevTools for agents, run the site locally in the background. Throttle the network conditions to simulate real-world performance constraints and capture the performance trace for the first 30 seconds. 
+          
+          List the recommended fixes based on the trace at the end. 
+          
+          Then, for EVERY recommended fix, do the following:
+          1. Create and checkout a brand new git branch named 'perf-fix-<issue-name>'.
+          2. Invoke a subagent to apply the code fix. Instruct the subagent to use the 'modern web guidance' skill to ensure best practices.
+          3. Have the subagent commit the changes to that branch.
+          4. Push the branch to origin and use the 'gh' cli to create a pull request with the details of the trace improvement.
+          5. Checkout main again before moving to the next fix." \
+          --skills "modern web guidance" \
+          --dangerously-skip-permissions
