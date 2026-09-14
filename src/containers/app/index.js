@@ -1,18 +1,19 @@
-import { useState } from 'react';
+import React, { useState, Suspense, lazy } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { withStyles } from '../../utils/withStyles';
 import CssBaseline from '@mui/material/CssBaseline';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import {
-  Sidebar,
-  Talks,
-  About,
-  Header,
-  Blogs,
-  Projects,
-  GameStart,
-  BlogPost,
-} from '../../components';
+
+import GameStart from '../../components/game-start';
+import Header from '../../components/header';
+import Sidebar from '../../components/sidebar';
+
+const Talks = lazy(() => import('../../components/talks'));
+const About = lazy(() => import('../../components/about'));
+const Blogs = lazy(() => import('../../components/blogs'));
+const Projects = lazy(() => import('../../components/projects'));
+const BlogPost = lazy(() => import('../../components/blog-post'));
+
 import './App.css';
 import styles from './styles';
 
@@ -55,10 +56,12 @@ function App({ classes }) {
   }
 
   return (
-    <Routes>
-      <Route path="/blog/:slug" element={<BlogPost />} />
-      <Route path="*" element={renderMain()} />
-    </Routes>
+    <Suspense fallback={<div style={{ color: 'white', padding: '20px' }}>Loading...</div>}>
+      <Routes>
+        <Route path="/blog/:slug" element={<BlogPost />} />
+        <Route path="*" element={renderMain()} />
+      </Routes>
+    </Suspense>
   );
 }
 

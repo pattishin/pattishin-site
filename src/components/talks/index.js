@@ -44,7 +44,7 @@ function Talks({ classes }) {
             >
               <Grid2 container className="timelineContentWrapper">
                 <Grid2 size={{ xs: 12, lg: 3 }}>
-                  <img src={talk5} alt="GDG SF DevFest 2019" />
+                  <img loading="lazy" src={talk5} alt="GDG SF DevFest 2019" />
                 </Grid2>
                 <Grid2 size={{ xs: 12, lg: 9 }} className="timelineContent">
                   <div className="talkQuestTag">QUEST COMPLETE ✓</div>
@@ -65,7 +65,7 @@ function Talks({ classes }) {
             >
               <Grid2 container className="timelineContentWrapper">
                 <Grid2 size={{ xs: 12, lg: 3 }}>
-                  <img src={talk4} alt="Google I/O Extended (GDG Berkeley) 2018" />
+                  <img loading="lazy" src={talk4} alt="Google I/O Extended (GDG Berkeley) 2018" />
                 </Grid2>
                 <Grid2 size={{ xs: 12, lg: 9 }} className="timelineContent">
                   <div className="talkQuestTag">QUEST COMPLETE ✓</div>
@@ -86,7 +86,7 @@ function Talks({ classes }) {
             >
               <Grid2 container className="timelineContentWrapper">
                 <Grid2 size={{ xs: 12, lg: 3 }}>
-                  <img src={talk3} alt="Google I/O 2016 Re-cap" />
+                  <img loading="lazy" src={talk3} alt="Google I/O 2016 Re-cap" />
                 </Grid2>
                 <Grid2 size={{ xs: 12, lg: 9 }} className="timelineContent">
                   <div className="talkQuestTag">QUEST COMPLETE ✓</div>
@@ -107,7 +107,7 @@ function Talks({ classes }) {
             >
               <Grid2 container className="timelineContentWrapper">
                 <Grid2 size={{ xs: 12, lg: 3 }}>
-                  <img src={talk2} alt="Build with confidence 2015" />
+                  <img loading="lazy" src={talk2} alt="Build with confidence 2015" />
                 </Grid2>
                 <Grid2 size={{ xs: 12, lg: 9 }} className="timelineContent">
                   <div className="talkQuestTag">QUEST COMPLETE ✓</div>
@@ -128,7 +128,7 @@ function Talks({ classes }) {
             >
               <Grid2 container className="timelineContentWrapper">
                 <Grid2 size={{ xs: 12, lg: 3 }}>
-                  <img src={talk1} alt="JSConf 2014" />
+                  <img loading="lazy" src={talk1} alt="JSConf 2014" />
                 </Grid2>
                 <Grid2 size={{ xs: 12, lg: 9 }} className="timelineContent">
                   <div className="talkQuestTag">QUEST COMPLETE ✓</div>

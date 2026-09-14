@@ -1,16 +1,9 @@
-import { useState, useEffect } from 'react';
 import PixelSprite from '../../sprites/PixelSprite';
-import { WALLE_PALETTE, FRAME_A, FRAME_B } from '../../helpers/walle';
+import { WALLE_PALETTE, FRAME_A } from '../../helpers/walle';
 import { FIREFLIES } from '../../helpers/fireflies';
 import './GameStart.css';
 
 export default function GameStart({ onStart }) {
-  const [frame, setFrame] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => setFrame(f => f === 0 ? 1 : 0), 200);
-    return () => clearInterval(interval);
-  }, []);
 
   return (
     <div className="gs-root">
@@ -78,7 +71,7 @@ export default function GameStart({ onStart }) {
         {/* Wall-E rolling sprite */}
         <div className="gs-sprite">
           <PixelSprite
-            pixels={frame === 0 ? FRAME_A : FRAME_B}
+            pixels={FRAME_A}
             palette={WALLE_PALETTE}
             size={4}
           />
