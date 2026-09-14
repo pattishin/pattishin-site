@@ -4,6 +4,9 @@ import { withStyles } from '../../utils/withStyles';
 import CssBaseline from '@mui/material/CssBaseline';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 
+import './App.css';
+import styles from './styles';
+
 import GameStart from '../../components/game-start';
 import Header from '../../components/header';
 import Sidebar from '../../components/sidebar';
@@ -13,9 +16,6 @@ const About = lazy(() => import('../../components/about'));
 const Blogs = lazy(() => import('../../components/blogs'));
 const Projects = lazy(() => import('../../components/projects'));
 const BlogPost = lazy(() => import('../../components/blog-post'));
-
-import './App.css';
-import styles from './styles';
 
 function App({ classes }) {
   const [open, setOpen] = useState(false);
