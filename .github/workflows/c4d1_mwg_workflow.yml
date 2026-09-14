@@ -16,8 +16,12 @@ jobs:
           node-version: '24'
 
       - name: Install Project Dependencies
-        run: npm install
-
+        run: npm install   
+      
+      - name: Install Modern Web Guidance Plugin
+        # Installs the official Chrome team skills package directly into Antigravity
+        run: agy plugin install https://github.com/GoogleChrome/modern-web-guidance
+       
       - name: Install Google Chrome (Required for DevTools for Agents)
         run: |
           sudo apt-get update
@@ -60,7 +64,7 @@ jobs:
           Then, for EVERY recommended fix, do the following:
           1. When you use "agy" append "--dangerously-skip-permissions" at the end as needed.
           2. Create and checkout a brand new git branch named 'perf-fix-<issue-name>'.
-          3. Invoke a subagent to apply the code fix. Instruct the subagent to use the 'modern web guidance' skill to ensure best practices.
+          3. Instruct the subagent to use the 'modern-web-guidance' skill to find fixes and ensure best web practices, then invoke the subagent to apply it.
           4. Have the subagent commit the changes to that branch.
           5. Push the branch to origin and use the 'gh' cli to create a pull request with the details of the trace improvement. Add tokens used by mcp and skill.
           6. Checkout main again before moving to the next fix." 
