@@ -1,22 +1,27 @@
 name: Agentic Performance Audit & Auto-Fix
 
 on:
-  workflow_dispatch: # Allows you to run this manually from the GitHub UI
+ issues:
+   types: [opened, labeled]
 
 jobs:
   audit-and-fix:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v6
+    # Optional: Only run if the issue is labeled with 'modernize' or 'bug'
+   if: contains(github.event.issue.labels.*.name, 'modernize')
+   runs-on: ubuntu-latest
 
-      - name: Setup Node (Adjust if using Python/Ruby/etc)
-        uses: actions/setup-node@v6
-        with:
-          node-version: '24.18.0'
+    # Required permissions for the agent to push code and create PRs
+   permissions:
+     contents: write
+     pull-requests: write
+     issues: write
 
-      - name: Install Project Dependencies
-        run: npm install
+   steps:
+     # Checking out the repos
+     - name: Checkout pattishin-site repository
+       uses: actions/checkout@v6
+       with:
+         fetch-depth: 0 # Full history is needed so the agent can branch off correctly
 
       - name: Install Google Chrome (Required for DevTools for Agents)
         run: |
@@ -60,12 +65,17 @@ jobs:
           agy -p "With Chrome DevTools for agents, run the site locally in the background. Throttle the network conditions to simulate real-world performance constraints and capture the performance trace for the first 30 seconds. 
           
           List the recommended fixes based on the trace at the end. 
+          # Pipe the issue context and instruct the agent to use Modern Web Guidance
           
+         echo -e "Issue #${{ github.event.issue.number }}: ${{ github.event.issue.title }}\n\n${{ github.event.issue.body }}" | agy -p "
+         You are an expert frontend developer maintaining the pattishin.io website.
+
           Then, for EVERY recommended fix, do the following:
-          1. Create and checkout a brand new git branch named 'perf-fix-<issue-name>'.
-          2. Invoke a subagent to apply the code fix. Instruct the subagent to use the 'modern web guidance' skill to ensure best practices.
-          3. Have the subagent commit the changes to that branch.
-          4. Push the branch to origin and use the 'gh' cli to create a pull request with the details of the trace improvement.
-          5. Checkout main again before moving to the next fix." \
+          1. Review the piped issue.
+          2. Create and checkout a brand new git branch named 'perf-fix-<issue-name>'.
+          3. Invoke a subagent to apply the code fix. Instruct the subagent to use the 'modern web guidance' skill to ensure best practices.
+          4. Have the subagent commit the changes to that branch.
+          5. Push the branch to origin and use the 'gh' cli to create a pull request with the details of the trace improvement.
+          6. Checkout main again before moving to the next fix." \
           --skills "modern web guidance" \
           --dangerously-skip-permissions
